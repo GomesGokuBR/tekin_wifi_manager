@@ -1,0 +1,17 @@
+{
+  "name": "cordova-plugin-tekin-wifi",
+  "version": "0.0.1",
+  "description": "Manage wifi",
+  "cordova": {
+    "id": "cordova-plugin-tekin-wifi",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Tekin@gomes",
+  "license": "ISC"
+}
