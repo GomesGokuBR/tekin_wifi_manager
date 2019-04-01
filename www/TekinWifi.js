@@ -1,5 +1,5 @@
 var exec = require('cordova/exec');
 
-exports.coolMethod = function (arg0, success, error) {
-    exec(success, error, 'TekinWifi', 'coolMethod', [arg0]);
+exports.toggleWifi = function (arg0, success, error) {
+    exec(success, error, 'TekinWifi', 'toggleWifi', [arg0]);
 };
