@@ -13,8 +13,5 @@
     "cordova-android"
   ],
   "author": "Tekin@gomes",
-  "license": "ISC",
-  "scripts": {
-    "postuninstall": "ionic cordova platform rm android && ionic cordova platform add android"
-  }
+  "license": "ISC"
 }
