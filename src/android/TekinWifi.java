@@ -39,7 +39,7 @@ public class TekinWifi extends CordovaPlugin {
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     this.hasWifiStatePermission();
     if (action.equals("toggleWifi")) {
-      if(this.permissionStateWifi) this.toggleWifi(args, callbackContext);
+      if (this.permissionStateWifi) this.toggleWifi(args, callbackContext);
       return true;
     }
     return false;
@@ -47,97 +47,98 @@ public class TekinWifi extends CordovaPlugin {
 
   /**
    * Perùet de activer/desactiver le wifi du device
+   *
    * @param args
    * @param callbackContext
    * @throws JSONException
    */
-    private void toggleWifi(JSONArray args, CallbackContext callbackContext) throws JSONException {
-      if(this.permissionStateWifi){
-        boolean turnWifi = args.getBoolean(0);
-        Context mContext = cordova.getContext();
-        this.wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        JSONObject response = new JSONObject();
-        if(turnWifi) {
-          this.wifiManager.setWifiEnabled(true);
-          response.put("toggleWifi", true);
-          this.listWifi();
-          callbackContext.success(response);
-        }else {
-          this.wifiManager.setWifiEnabled(false);
-          response.put("toggleWifi", false);
-          callbackContext.success(response);
-        }
+  private void toggleWifi(JSONArray args, CallbackContext callbackContext) throws JSONException {
+    if (this.permissionStateWifi) {
+      boolean turnWifi = args.getBoolean(0);
+      Context mContext = cordova.getContext();
+      this.wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+      JSONObject response = new JSONObject();
+      if (turnWifi) {
+        this.wifiManager.setWifiEnabled(true);
+        response.put("toggleWifi", true);
+        this.listWifi();
+        callbackContext.success(response);
+      } else {
+        this.wifiManager.setWifiEnabled(false);
+        response.put("toggleWifi", false);
+        callbackContext.success(response);
       }
     }
+  }
 
   /**
    * Permet de lister la listes des reseaux wifi visibles par le device=
+   *
    * @param args
    * @param callbackContext
    * @throws JSONException
    */
-    private void listWifi() throws JSONException {
-      if(this.permissionStateWifi){
-        arrayList.clear();
+  private void listWifi() throws JSONException {
+    if (this.permissionStateWifi) {
+      arrayList.clear();
 
-        cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(wifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        if(!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-          PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_FINE_LOCATION);
-          Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
-        }
-        else {
-          wifiManager.startScan();
-          Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
-        }
+      cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(wifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+      if (!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_FINE_LOCATION);
+        Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
+      } else {
+        wifiManager.startScan();
+        Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
       }
     }
+  }
 
 
-    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
-      @Override
-      public void onReceive(Context context, Intent intent) {
-        List<ScanResult> results = wifiManager.getScanResults();
-        context.unregisterReceiver(this);
-        for (ScanResult scanResult: results){
-          if(scanResult.SSID.equals("Hacare_hotspot")){
-            Log.d("tek_wifi", "Wifi trouve "+scanResult.SSID);
-            WifiConfiguration wifiConfiguration = new WifiConfiguration();
-            wifiConfiguration.SSID = String.format("\"%s\"", scanResult.SSID);
-            wifiConfiguration.preSharedKey = String.format("\"%s\"", "tekin_password");
-
-            int netId = wifiManager.addNetwork(wifiConfiguration);
-            wifiManager.disconnect();
-            wifiManager.enableNetwork(netId, true);
-            wifiManager.reconnect();
-          }
-        }
-        //wifiManager.startScan();
-      }
-    };
-
-
-    private void scanSuccess() {
+  BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
       List<ScanResult> results = wifiManager.getScanResults();
-    }
+      context.unregisterReceiver(this);
+      for (ScanResult scanResult : results) {
+        if (scanResult.SSID.equals("Hacare_hotspot")) {
+          Log.d("tek_wifi", "Wifi trouve " + scanResult.SSID);
+          WifiConfiguration wifiConfiguration = new WifiConfiguration();
+          wifiConfiguration.SSID = String.format("\"%s\"", scanResult.SSID);
+          wifiConfiguration.preSharedKey = String.format("\"%s\"", "tekin_password");
 
-  private void scanFailure() {
-    // handle failure: new scan did NOT succeed
-    // consider using old scan results: these are the OLD results!
-    List<ScanResult> results = wifiManager.getScanResults();
+          int netId = wifiManager.addNetwork(wifiConfiguration);
+          wifiManager.disconnect();
+          wifiManager.enableNetwork(netId, true);
+          wifiManager.reconnect();
+        }
+      }
+      //wifiManager.startScan();
+    }
+  };
+
+
+  /**
+   * Permet de Verifier si le device possede les autorisations necessares pour la gestions de wifi.
+   */
+  private void hasWifiStatePermission() {
+    if (!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+      String[] permissions = new String[3];
+      permissions[0] = Manifest.permission.ACCESS_FINE_LOCATION;
+      permissions[1] = Manifest.permission.ACCESS_WIFI_STATE;
+      permissions[2] = Manifest.permission.CHANGE_WIFI_STATE;
+      PermissionHelper.requestPermissions(this, CONTINUE, permissions);
+    }
+    else {
+      this.permissionStateWifi = true;
+    }
   }
 
-  private void unregisterReceiverWifi(Context mContext){
-     mContext.unregisterReceiver(this.wifiScanReceiver);
-  }
-
-  private void hasWifiStatePermission(){
-      if(PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_WIFI_STATE)){
-        this.permissionStateWifi = true;
-        LOG.d("tek_wifi", "permison wifi state true");
-      }
-      else {
-        LOG.d("tek_wifi", "permison wifi state false");
-        PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_WIFI_STATE);
-      }
+  @Override
+  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+    super.onRequestPermissionResult(requestCode, permissions, grantResults);
+    if(grantResults[0] == 0){
+      this.permissionStateWifi = true;
+      Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION ok", Toast.LENGTH_LONG).show();
     }
+  }
 }
