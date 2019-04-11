@@ -17,12 +17,15 @@ import org.apache.cordova.CallbackContext;
 
 import org.apache.cordova.LOG;
 import org.apache.cordova.PermissionHelper;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.callback.Callback;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -33,7 +36,9 @@ public class TekinWifi extends CordovaPlugin {
   private boolean permissionStateWifi = false;
   private ArrayList<String> arrayList = new ArrayList<>();
   private WifiManager wifiManager;
-  private BroadcastReceiver wifiScanReceiver;
+  //private BroadcastReceiver wifiScanReceiver;
+
+  private CallbackContext listeWifiContext;
 
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -43,7 +48,8 @@ public class TekinWifi extends CordovaPlugin {
       return true;
     }
     if(action.equals("getListeWifi")){
-      if(this.permissionStateWifi) this.listWifi();
+      //if(this.permissionStateWifi) this.listWifi(callbackContext);
+      callbackContext.success();
       return true;
     }
     return false;
@@ -77,21 +83,21 @@ public class TekinWifi extends CordovaPlugin {
   /**
    * Permet de lister la listes des reseaux wifi visibles par le device=
    *
-   * @param args
-   * @param callbackContext
+   * @param callbackContext context de retour d'appel de function
    * @throws JSONException
    */
-  private void listWifi() throws JSONException {
+  private void listWifi(CallbackContext callbackContext) throws JSONException {
     if (this.permissionStateWifi) {
       arrayList.clear();
-
-      cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(wifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+      this.listeWifiContext = callbackContext;
+      cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
       if (!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
         PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_FINE_LOCATION);
         Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
       } else {
         wifiManager.startScan();
         Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
+        callbackContext.success();
       }
     }
   }
@@ -100,24 +106,54 @@ public class TekinWifi extends CordovaPlugin {
   BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
+
+      JSONObject response = new JSONObject();
+      JSONArray jsonArrayWifi = new JSONArray();
+
       List<ScanResult> results = wifiManager.getScanResults();
       context.unregisterReceiver(this);
-      for (ScanResult scanResult : results) {
-        if (scanResult.SSID.equals("Hacare_hotspot")) {
-          Log.d("tek_wifi", "Wifi trouve " + scanResult.SSID);
-          WifiConfiguration wifiConfiguration = new WifiConfiguration();
-          wifiConfiguration.SSID = String.format("\"%s\"", scanResult.SSID);
-          wifiConfiguration.preSharedKey = String.format("\"%s\"", "tekin_password");
 
-          int netId = wifiManager.addNetwork(wifiConfiguration);
-          wifiManager.disconnect();
-          wifiManager.enableNetwork(netId, true);
-          wifiManager.reconnect();
+      for (ScanResult scanResult : results) {
+        JSONObject wifiJson = new JSONObject();
+        try {
+          wifiJson.put("ssid", scanResult.SSID);
+          wifiJson.put("mac", scanResult.BSSID);
+          wifiJson.put("puissance", scanResult.level);
+          jsonArrayWifi.put(wifiJson);
+        } catch (JSONException e) {
+          LOG.d("wifi_tek", e.getMessage());
+          listeWifiContext.error(e.getMessage());
         }
       }
-      //wifiManager.startScan();
+      try {
+        response.put("wifi", jsonArrayWifi);
+        //listeWifiContext.success();
+        un();
+      } catch (JSONException e) {
+        e.printStackTrace();
+        listeWifiContext.error(e.getMessage());
+      }
     }
   };
+
+  private void un(){
+    this.listeWifiContext.success();
+  }
+
+
+  public void connect(CallbackContext callbackContext, JSONArray args) throws JSONException{
+    // if (scanResult.SSID.equals("Hacare_hotspot")) {
+    //   Log.d("tek_wifi", "Wifi trouve " + scanResult.SSID);
+    //   WifiConfiguration wifiConfiguration = new WifiConfiguration();
+    //   wifiConfiguration.SSID = String.format("\"%s\"", scanResult.SSID);
+    //   wifiConfiguration.preSharedKey = String.format("\"%s\"", "tekin_password");
+
+    //   int netId = wifiManager.addNetwork(wifiConfiguration);
+    //   wifiManager.disconnect();
+    //   wifiManager.enableNetwork(netId, true);
+    //   wifiManager.reconnect();
+    // }
+  }
 
 
   /**
