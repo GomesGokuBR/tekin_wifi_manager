@@ -42,6 +42,10 @@ public class TekinWifi extends CordovaPlugin {
       if (this.permissionStateWifi) this.toggleWifi(args, callbackContext);
       return true;
     }
+    if(action.equals("getListeWifi")){
+      if(this.permissionStateWifi) this.listWifi();
+      return true;
+    }
     return false;
   }
 
@@ -61,7 +65,6 @@ public class TekinWifi extends CordovaPlugin {
       if (turnWifi) {
         this.wifiManager.setWifiEnabled(true);
         response.put("toggleWifi", true);
-        this.listWifi();
         callbackContext.success(response);
       } else {
         this.wifiManager.setWifiEnabled(false);
