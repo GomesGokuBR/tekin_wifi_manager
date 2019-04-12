@@ -7,3 +7,7 @@ exports.toggleWifi = function (arg0, success, error) {
 exports.getListeWifi = function (success, error) {
     exec(success, error, 'TekinWifi', 'getListeWifi', []);
 };
+
+exports.connect = function (arg0, success, error) {
+    exec(success, error, 'TekinWifi', 'connect', [arg0]);
+};
