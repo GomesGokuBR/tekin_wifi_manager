@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -49,6 +50,10 @@ public class TekinWifi extends CordovaPlugin {
     }
     if(action.equals("getListeWifi")){
       if(this.permissionStateWifi) this.listWifi(callbackContext);
+      return true;
+    }
+    if(action.equals("connect")){
+      if(this.permissionStateWifi) this.connect(callbackContext, args);
       return true;
     }
     return false;
@@ -132,19 +137,33 @@ public class TekinWifi extends CordovaPlugin {
   };
 
   public void connect(CallbackContext callbackContext, JSONArray args) throws JSONException{
-    // if (scanResult.SSID.equals("Hacare_hotspot")) {
-    //   Log.d("tek_wifi", "Wifi trouve " + scanResult.SSID);
-    //   WifiConfiguration wifiConfiguration = new WifiConfiguration();
-    //   wifiConfiguration.SSID = String.format("\"%s\"", scanResult.SSID);
-    //   wifiConfiguration.preSharedKey = String.format("\"%s\"", "tekin_password");
+    JSONObject wifi = (JSONObject) args.get(0);
+    JSONObject response = new JSONObject();
 
-    //   int netId = wifiManager.addNetwork(wifiConfiguration);
-    //   wifiManager.disconnect();
-    //   wifiManager.enableNetwork(netId, true);
-    //   wifiManager.reconnect();
-    // }
+    if(wifiManager.isWifiEnabled()){
+
+      WifiConfiguration wifiConfiguration = new WifiConfiguration();
+      wifiConfiguration.SSID = String.format("\"%s\"", wifi.get("ssid"));
+      wifiConfiguration.preSharedKey = String.format("\"%s\"", wifi.get("pwd"));
+
+      wifiManager.disconnect();
+      int netID = wifiManager.addNetwork(wifiConfiguration);
+      boolean result = wifiManager.enableNetwork(netID, true);
+      Toast.makeText(cordova.getContext(), "Connection " + wifiConfiguration.SSID + " " + result, Toast.LENGTH_SHORT).show();
+      wifiManager.reconnect();
+      if(result) response.put("connect", true);
+      else response.put("connect", false);
+
+      callbackContext.success(response);
+    }
+    else {
+      Toast.makeText(cordova.getContext(), "Wifi n'est pas allumé", Toast.LENGTH_SHORT).show();
+      response.put("connect", false);
+      response.put("message", "Wifi n'est pas allumé");
+      response.put("code_error", "undefined");
+      callbackContext.error(response);
+    }
   }
-
 
   /**
    * Permet de Verifier si le device possede les autorisations necessares pour la gestions de wifi.
