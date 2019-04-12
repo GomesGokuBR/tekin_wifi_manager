@@ -48,8 +48,7 @@ public class TekinWifi extends CordovaPlugin {
       return true;
     }
     if(action.equals("getListeWifi")){
-      //if(this.permissionStateWifi) this.listWifi(callbackContext);
-      callbackContext.success();
+      if(this.permissionStateWifi) this.listWifi(callbackContext);
       return true;
     }
     return false;
@@ -65,8 +64,6 @@ public class TekinWifi extends CordovaPlugin {
   private void toggleWifi(JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (this.permissionStateWifi) {
       boolean turnWifi = args.getBoolean(0);
-      Context mContext = cordova.getContext();
-      this.wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
       JSONObject response = new JSONObject();
       if (turnWifi) {
         this.wifiManager.setWifiEnabled(true);
@@ -97,7 +94,6 @@ public class TekinWifi extends CordovaPlugin {
       } else {
         wifiManager.startScan();
         Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
-        callbackContext.success();
       }
     }
   }
@@ -127,19 +123,13 @@ public class TekinWifi extends CordovaPlugin {
       }
       try {
         response.put("wifi", jsonArrayWifi);
-        //listeWifiContext.success();
-        un();
+        listeWifiContext.success(response);
       } catch (JSONException e) {
         e.printStackTrace();
         listeWifiContext.error(e.getMessage());
       }
     }
   };
-
-  private void un(){
-    this.listeWifiContext.success();
-  }
-
 
   public void connect(CallbackContext callbackContext, JSONArray args) throws JSONException{
     // if (scanResult.SSID.equals("Hacare_hotspot")) {
@@ -170,6 +160,8 @@ public class TekinWifi extends CordovaPlugin {
     else {
       this.permissionStateWifi = true;
     }
+    Context mContext = cordova.getContext();
+    this.wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
   }
 
   @Override
