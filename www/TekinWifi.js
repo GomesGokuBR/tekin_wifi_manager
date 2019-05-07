@@ -11,3 +11,7 @@ exports.getListeWifi = function (success, error) {
 exports.connect = function (arg0, success, error) {
     exec(success, error, 'TekinWifi', 'connect', [arg0]);
 };
+
+exports.hasPermissions = function (success, error) {
+    exec(success, error, 'TekinWifi', 'hasPermissions', []);
+};
