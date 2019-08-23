@@ -95,10 +95,10 @@ public class TekinWifi extends CordovaPlugin {
       cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
       if (!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
         PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_FINE_LOCATION);
-        Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
+        // Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
       } else {
         wifiManager.startScan();
-        Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
+        // Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
       }
     }
   }
@@ -122,7 +122,7 @@ public class TekinWifi extends CordovaPlugin {
           wifiJson.put("puissance", scanResult.level);
           jsonArrayWifi.put(wifiJson);
         } catch (JSONException e) {
-          LOG.d("wifi_tek", e.getMessage());
+          // LOG.d("wifi_tek", e.getMessage());
           listeWifiContext.error(e.getMessage());
         }
       }
@@ -149,7 +149,7 @@ public class TekinWifi extends CordovaPlugin {
       wifiManager.disconnect();
       int netID = wifiManager.addNetwork(wifiConfiguration);
       boolean result = wifiManager.enableNetwork(netID, true);
-      Toast.makeText(cordova.getContext(), "Connection " + wifiConfiguration.SSID + " " + result, Toast.LENGTH_SHORT).show();
+      // Toast.makeText(cordova.getContext(), "Connection " + wifiConfiguration.SSID + " " + result, Toast.LENGTH_SHORT).show();
       wifiManager.reconnect();
       if(result) response.put("connect", true);
       else response.put("connect", false);
@@ -188,7 +188,7 @@ public class TekinWifi extends CordovaPlugin {
     super.onRequestPermissionResult(requestCode, permissions, grantResults);
     if(grantResults[0] == 0){
       this.permissionStateWifi = true;
-      Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION ok", Toast.LENGTH_LONG).show();
+      // Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION ok", Toast.LENGTH_LONG).show();
     }
   }
 }
