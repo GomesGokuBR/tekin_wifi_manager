@@ -15,15 +15,15 @@
     <asset src="www/TekinWifi.js" target="js/TekinWifi.js"/>
 
     <js-module name="TekinWifi" src="www/TekinWifi.js">
-        <clobbers target="TekinWifi"/>
+        <clobbers target="wifi"/>
     </js-module>
 
     <!-- android -->
     <platform name="android">
 
         <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="TekinWifi">
-                <param name="android-package" value="com.tekin.plugin.TekinWifi"/>
+            <feature name="wifi">
+                <param name="android-package" value="com.tekin.plugin.wifi"/>
                 <!-- <param name="onload" value="true" /> -->
             </feature>
 
