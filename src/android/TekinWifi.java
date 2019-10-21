@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.GpsStatus;
+import android.location.LocationManager;
 import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,21 +43,32 @@ public class TekinWifi extends CordovaPlugin {
   //private BroadcastReceiver wifiScanReceiver;
 
   private CallbackContext listeWifiContext;
+  private LocationManager locationManager;
 
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     this.hasWifiStatePermission();
-    if (action.equals("toggleWifi")) {
-      if (this.permissionStateWifi) this.toggleWifi(args, callbackContext);
-      return true;
-    }
-    if(action.equals("getListeWifi")){
-      if(this.permissionStateWifi) this.listWifi(callbackContext);
-      return true;
-    }
-    if(action.equals("connect")){
-      if(this.permissionStateWifi) this.connect(callbackContext, args);
-      return true;
+    Log.d("domii2", action);
+    switch (action) {
+      case "toggleWifi":
+        if (this.permissionStateWifi) this.toggleWifi(args, callbackContext);
+        return true;
+      case "getListeWifi":
+        if (this.permissionStateWifi) this.listWifi(callbackContext);
+        return true;
+      case "connect":
+        if (this.permissionStateWifi) this.connect(callbackContext, args);
+        return true;
+      case "hasPermissions":
+        if (locationManager == null) {
+          Context context = this.cordova.getContext();
+          this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+          this.hasPermissions(callbackContext);
+          return true;
+        } else {
+          this.hasPermissions(callbackContext);
+          return true;
+        }
     }
     return false;
   }
@@ -83,6 +97,23 @@ public class TekinWifi extends CordovaPlugin {
   }
 
   /**
+   * Permet de verifier si l'app possède les permissions nécessaires pour controller le wifi
+   * @param callbackContext
+   * @throws JSONException
+   */
+  private void hasPermissions (CallbackContext callbackContext) throws JSONException {
+    Context context = this.cordova.getActivity().getApplicationContext();
+    int hasPerm = PermissionChecker.checkSelfPermission (context, Manifest.permission.ACCESS_FINE_LOCATION);
+    boolean wifiState = wifiManager.isWifiEnabled();
+    boolean statusGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    JSONObject response = new JSONObject();
+    response.put("hasPermissions", hasPerm);
+    response.put("location", statusGps);
+    response.put("wiifiState", wifiState);
+    callbackContext.success(response);
+  }
+
+  /**
    * Permet de lister la listes des reseaux wifi visibles par le device=
    *
    * @param callbackContext context de retour d'appel de function
@@ -95,10 +126,8 @@ public class TekinWifi extends CordovaPlugin {
       cordova.getContext().registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
       if (!PermissionHelper.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
         PermissionHelper.requestPermission(this, CONTINUE, Manifest.permission.ACCESS_FINE_LOCATION);
-        // Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION", Toast.LENGTH_LONG).show();
       } else {
         wifiManager.startScan();
-        // Toast.makeText(cordova.getContext(), "Scanning wifi ...", Toast.LENGTH_LONG).show();
       }
     }
   }
@@ -188,7 +217,6 @@ public class TekinWifi extends CordovaPlugin {
     super.onRequestPermissionResult(requestCode, permissions, grantResults);
     if(grantResults[0] == 0){
       this.permissionStateWifi = true;
-      // Toast.makeText(cordova.getContext(), "Request permission ACCESS_FINE_LOCATION ok", Toast.LENGTH_LONG).show();
     }
   }
 }
