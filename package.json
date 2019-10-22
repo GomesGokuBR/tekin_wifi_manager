@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-tekin-wifi",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "Manage wifi",
   "cordova": {
     "id": "cordova-plugin-tekin-wifi",
@@ -10,7 +10,13 @@
   },
   "keywords": [
     "ecosystem:cordova",
-    "cordova-android"
+    "cordova-android",
+    "wifi",
+    "Wifi",
+    "ionic",
+    "Ionic",
+    "ionic 4",
+    "Ionic 4"
   ],
   "author": "Tekin@gomes",
   "license": "ISC"

@@ -12,6 +12,8 @@ import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,6 +47,12 @@ public class Wifi extends CordovaPlugin {
   private CallbackContext listeWifiContext;
   private LocationManager locationManager;
 
+  private Gps gps;
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  public Wifi() {
+    //this.gps = new Gps();
+  }
+
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     this.hasWifiStatePermission();
@@ -60,15 +68,16 @@ public class Wifi extends CordovaPlugin {
         if (this.permissionStateWifi) this.connect(callbackContext, args);
         return true;
       case "hasPermissions":
-        if (locationManager == null) {
+        /**if (locationManager == null) {
           Context context = this.cordova.getContext();
           this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
           this.hasPermissions(callbackContext);
-          return true;
+
         } else {
           this.hasPermissions(callbackContext);
           return true;
-        }
+        } **/
+        return true;
     }
     return false;
   }

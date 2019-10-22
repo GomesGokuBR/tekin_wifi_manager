@@ -9,12 +9,12 @@
     <issue>https://github.com/TekinGomes37/tekin_wifi_manager/issues</issue>
 
     <engines>
-        <engine name="cordova" version=">=3.0.0"/>
+        <engine name="cordova" version=">=3.4.0"/>
     </engines>
     
     <!-- <asset src="www/TekinWifi.js" target="js/TekinWifi.js"/> -->
 
-    <js-module name="Wifi" src="www/TekinWifi.js">
+    <js-module name="Wifi" src="www/tekin.wifi.js">
         <clobbers target="Wifi"/>
     </js-module>
 
@@ -23,8 +23,7 @@
 
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="Wifi">
-                <param name="android-package" value="com.tekin.plugin.wifi"/>
-                <!-- <param name="onload" value="false" /> -->
+                <param name="android-package" value="com.tekin.cordova.wifi.Wifi"/>
             </feature>
         </config-file>
 
