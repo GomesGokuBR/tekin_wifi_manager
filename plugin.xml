@@ -12,21 +12,20 @@
         <engine name="cordova" version=">=3.0.0"/>
     </engines>
     
-    <asset src="www/TekinWifi.js" target="js/TekinWifi.js"/>
+    <!-- <asset src="www/TekinWifi.js" target="js/TekinWifi.js"/> -->
 
-    <js-module name="TekinWifi" src="www/TekinWifi.js">
-        <clobbers target="wifi"/>
+    <js-module name="Wifi" src="www/TekinWifi.js">
+        <clobbers target="Wifi"/>
     </js-module>
 
     <!-- android -->
     <platform name="android">
 
         <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="wifi">
+            <feature name="Wifi">
                 <param name="android-package" value="com.tekin.plugin.wifi"/>
-                <!-- <param name="onload" value="true" /> -->
+                <!-- <param name="onload" value="false" /> -->
             </feature>
-
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -36,6 +35,6 @@
             <!-- add permission  -->
         </config-file>
 
-        <source-file src="src/android/TekinWifi.java" target-dir="src/com/tekin/plugin/TekinWifi"/>
+        <source-file src="src/android/Wifi.java" target-dir="src/com/tekin/cordova/wifi"/>
     </platform>
 </plugin>

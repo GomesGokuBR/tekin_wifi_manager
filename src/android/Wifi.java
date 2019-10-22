@@ -1,4 +1,4 @@
-package com.tekin.plugin;
+package com.tekin.cordova.wifi;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -34,7 +34,7 @@ import javax.security.auth.callback.Callback;
 /**
  * This class echoes a string called from JavaScript.
  */
-public class TekinWifi extends CordovaPlugin {
+public class Wifi extends CordovaPlugin {
 
   public static final int CONTINUE = 1;
   private boolean permissionStateWifi = false;
