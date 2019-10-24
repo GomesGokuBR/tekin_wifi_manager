@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-tekin-wifi",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "Manage wifi",
   "cordova": {
     "id": "cordova-plugin-tekin-wifi",

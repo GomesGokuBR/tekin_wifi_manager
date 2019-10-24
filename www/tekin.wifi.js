@@ -12,6 +12,14 @@ exports.connect = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'connect', [arg0]);
 };
 
+exports.connect = function (arg0, success, error) {
+    exec(success, error, 'Wifi', 'gpsAndWifiState', [arg0]);
+};
+
 exports.hasPermissions = function (success, error) {
     exec(success, error, 'Wifi', 'hasPermissions', []);
+};
+
+exports.hasPermissions = function (success, error) {
+    exec(success, error, 'Wifi', 'requestPermission', []);
 };
