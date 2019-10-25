@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="cordova-tekin-plugin-tekin-wifi" version="2.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="cordova-tekin-plugin-tekin-wifi" version="2.1.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <name>Tekin Wifi</name>
     <description>An Android Cordova plugin to manage wifi</description>
@@ -35,5 +35,7 @@
         </config-file>
 
         <source-file src="src/android/Wifi.java" target-dir="src/com/tekin/cordova/wifi"/>
+        <source-file src="src/android/Gps.java" target-dir="src/com/tekin/cordova/wifi"/>
+        <source-file src="src/android/WifiManager2.java" target-dir="src/com/tekin/cordova/wifi"/>
     </platform>
 </plugin>
