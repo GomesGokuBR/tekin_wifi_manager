@@ -34,6 +34,11 @@ public class Gps {
         return perm == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Demande la permisison a l'user d'utiliser la location, qui est necessaire a l'utilisation de
+     * wifi
+     * @param plugin
+     */
     public void requestPermission (CordovaPlugin plugin) {
         plugin.cordova.getThreadPool().execute(() -> {
             String[] permissions = new String[3];
@@ -51,14 +56,5 @@ public class Gps {
     public boolean getGpsState () {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
-
-    /**@Override
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
-        super.onRequestPermissionResult(requestCode, permissions, grantResults);
-        if(grantResults[0] == 0){
-            this.permissionStateWifi = true;
-        }
-    }**/
-
 
 }
