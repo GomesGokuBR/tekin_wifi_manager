@@ -1,49 +1,18 @@
 package com.tekin.cordova.wifi;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.location.GpsStatus;
-import android.location.LocationManager;
-import android.net.NetworkSpecifier;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
-import android.support.v4.content.PermissionChecker;
-import android.util.Log;
-import android.widget.Toast;
-
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
-import org.apache.cordova.LOG;
-import org.apache.cordova.PermissionHelper;
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.callback.Callback;
 
 /**
  * This class echoes a string called from JavaScript.
  */
 public class Wifi extends CordovaPlugin {
 
-  public static final int CONTINUE = 1;
   private boolean permissionStateWifi = false;
-  //private ArrayList<String> arrayList = new ArrayList<>(); not used
-  private WifiManager wifiManager;
-  //private BroadcastReceiver wifiScanReceiver;
-
-  private CallbackContext listeWifiContext;
-  private LocationManager locationManager;
 
   private Gps gps;
   private WifiManager2 wifi;
@@ -51,9 +20,7 @@ public class Wifi extends CordovaPlugin {
 
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-    // this.hasWifiStatePermission();
     this.prepare();
-    Log.d("domii2", action);
     switch (action) {
       case "toggleWifi":
         this.toggleWifi(args, callbackContext);
@@ -66,6 +33,7 @@ public class Wifi extends CordovaPlugin {
         return true;
       case "gpsAndWifiState":
         this.gpsAndWifiState(callbackContext);
+        return true;
       case "hasPermissions":
         this.hasPermissions(callbackContext);
         return true;

@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
@@ -83,16 +82,12 @@ public class WifiManager2 {
         if (this.callbackListeWifi != null) {
             this.callbackListeWifi = callBackCtx;
 
-            Log.d("callId", callBackCtx.getCallbackId());
-
             this.observerScanWifi();
         } else {
             JSONObject errResponse = new JSONObject();
 
             errResponse.put("error_code", 1);
             errResponse.put("message", "scan wifi est en cours");
-
-            Log.d("callId", callBackCtx.getCallbackId());
 
             callBackCtx.error(errResponse);
         }
