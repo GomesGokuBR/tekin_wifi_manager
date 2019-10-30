@@ -48,6 +48,7 @@ public class Wifi extends CordovaPlugin {
     if (!this.ready) {
       this.gps = new Gps(this.cordova.getContext());
       this.wifi = new WifiManager2(this.cordova.getContext());
+      this.ready = true;
     }
   }
 
