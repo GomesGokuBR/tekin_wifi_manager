@@ -60,13 +60,11 @@ public class Wifi extends CordovaPlugin {
    * @throws JSONException error
    */
   private void toggleWifi(JSONArray args, CallbackContext callbackContext) throws JSONException {
-    if (this.permissionStateWifi) {
-      boolean turnWifi = args.getBoolean(0);
-      boolean res = this.wifi.toggleWifi(turnWifi);
-      JSONObject response = new JSONObject();
-      response.put("toggleWifi", res);
-      callbackContext.success(response);
-    }
+    boolean turnWifi = args.getBoolean(0);
+    boolean res = this.wifi.toggleWifi(turnWifi);
+    JSONObject response = new JSONObject();
+    response.put("toggleWifi", res);
+    callbackContext.success(response);
   }
 
   private void gpsAndWifiState (CallbackContext ctx) throws JSONException {

@@ -79,10 +79,16 @@ public class WifiManager2 {
      * @param callBackCtx callback de retour de l'app js
      */
     public void scanWifi (CallbackContext callBackCtx) throws JSONException {
-        if (this.callbackListeWifi != null) {
+        if (this.callbackListeWifi == null) {
             this.callbackListeWifi = callBackCtx;
-
             this.observerScanWifi();
+            this.wifiManager.startScan();
+
+        } else if (callbackListeWifi.isFinished()) {
+            this.callbackListeWifi = callBackCtx;
+            this.observerScanWifi();
+            this.wifiManager.startScan();
+
         } else {
             JSONObject errResponse = new JSONObject();
 
@@ -143,7 +149,6 @@ public class WifiManager2 {
             wifiConfiguration.SSID = String.format("\"%s\"", wifi.get("ssid"));
             wifiConfiguration.preSharedKey = String.format("\"%s\"", wifi.get("pwd"));
 
-            // wifiManager.removeNetwork(wifiConfiguration.networkId);
             int netID = wifiManager.addNetwork(wifiConfiguration);
             boolean result = wifiManager.enableNetwork(netID, true);
             wifiManager.reconnect();
