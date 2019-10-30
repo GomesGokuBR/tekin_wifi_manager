@@ -4,7 +4,7 @@ exports.toggleWifi = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'toggleWifi', [arg0]);
 };
 
-exports.getListeWifi = function (success, error) {
+exports.getListeWifi = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'getListeWifi', []);
 };
 
@@ -16,10 +16,10 @@ exports.gpsAndWifiState = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'gpsAndWifiState', []);
 };
 
-exports.hasPermissions = function (success, error) {
+exports.hasPermissions = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'hasPermissions', []);
 };
 
-exports.requestPermission = function (success, error) {
+exports.requestPermission = function (arg0, success, error) {
     exec(success, error, 'Wifi', 'requestPermission', []);
 };
